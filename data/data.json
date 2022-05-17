@@ -1,0 +1,60 @@
+{
+  "map": [
+    1,
+    0,
+    0,
+    0,
+    0
+  ],
+  "player": {
+    "name": "character1",
+    "image_path": "images/character/character1.png",
+    "max_HP": 50,
+    "HP": 50,
+    "cards": [
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      1
+    ],
+    "armor": 0,
+    "buff": [
+      0,
+      0
+    ],
+    "debuff": [
+      0,
+      0,
+      0
+    ],
+    "extra_cards": 0,
+    "cost": 1,
+    "max_cost": 1
+  },
+  "enemies_ids": [
+    [
+      0
+    ],
+    [
+      0,
+      0
+    ],
+    [
+      0,
+      0,
+      0
+    ],
+    [
+      0
+    ],
+    [
+      0
+    ]
+  ]
+}

@@ -1,0 +1,11 @@
+{
+    "0" : { 
+        "name" : "slime", 
+        "image_path" : "images/enemy/slime.png", 
+        "max_HP" : 10,
+        "armor" : 0,
+        "damage" : 5,
+        "action_list" : [1, 0, 0, 0, 0, 0],
+        "actual_list" :  [0]
+    }
+}
