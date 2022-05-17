@@ -24,3 +24,7 @@ class Player:
         # effect[9], effect[10]
     def isDead(self):
         return self.HP <= 0 
+    def initialize(self):
+        self.cost = self.max_cost
+        self.armor = 0
+        #暂缺： 回合数更新

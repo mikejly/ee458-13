@@ -40,7 +40,7 @@ def initialization():
     data = {
         "map": [0, 0, 0, 0, 0], 
         "player" : player.__dict__,
-        "enemies_ids" : [[0], [0, 0], [0, 0, 0], [0], [0]]
+        "enemies_ids" : [[0], [0], [0], [0], [0]]
         }
     with open("data/data.json", "w") as f:
         json.dump(data, f, indent = 2)
@@ -152,6 +152,7 @@ def showSaveAndLoadInterface(screen, width, height, clock, state):
 
 def showBattleInterface(screen, width, height, clock, e_id):
     cfont = pygame.font.Font('font/simkai.ttf', 15)
+    #角色，卡牌，怪物初始化
     with open("data/data.json", "r") as f:
         data = json.load(f)
         player_data = data["player"]
@@ -165,13 +166,14 @@ def showBattleInterface(screen, width, height, clock, e_id):
     with open("data/cards.json", "r") as f:
         cards_data = json.load(f)
         # cards_keys = [*data]
-    cards = []
+    cards = {} #不同种类而非数量
     for key in cards_keys:
-        cards.append(Card(
+        cards[str(key)] = Card(
             cards_data[str(key)]["name"],
+            cards_data[str(key)]["image_path"],
             cards_data[str(key)]["value"],
-            cards_data[str(key)]["image_path"]
-            ))
+            cards_data[str(key)]["cost"]
+            )
     with open("data/enemies.json", "r") as f:
         enemy_data = json.load(f) 
     enemies = []
@@ -185,47 +187,50 @@ def showBattleInterface(screen, width, height, clock, e_id):
             enemy_data[str(i)]["action_list"],
             enemy_data[str(i)]["actual_list"])
         enemies.append(enemy)
+    #受击抖动相关
     player_hit = False
     enemy_hit = False
     loop = 1
     shift = [0, 10, -10]
+    #点击锁定相关
+    lock = False
+    selected_card = -1  #在手牌中的位置
+    #牌堆初始化
     piles = Piles(cards_keys)
     if piles.heap_num < piles.HANDMAX:
         piles.resetcard()
     piles.dealcard()
-    lock = False
-    locked_card = -1
     while True:
         for event in pygame.event.get():
             for i in range(loop):
                 clock.tick(60)
                 screen.fill((255, 255, 255))
                 if player_hit:
-                    showImage(screen, player.image_path, 50+shift[i%3] , 400+50)
+                    showImage(screen, player.image_path, 50+shift[i%3] , 300+50)
                     enemy_img = showImage(screen, enemies[0].image_path, 700+50, 50)
                 elif enemy_hit:
-                    showImage(screen, player.image_path, 50 , 400+50)
+                    showImage(screen, player.image_path, 50 , 300+50)
                     enemy_img = showImage(screen, enemies[0].image_path, 700+50+shift[i%3], 50)
                 else:
-                    showImage(screen, player.image_path, 50 , 400+50)
+                    showImage(screen, player.image_path, 50 , 300+50)
                     enemy_img = showImage(screen, enemies[0].image_path, 700+50, 50)
                 screen.blit(enemy_img[1], enemy_img[0])
-                showContent(screen, 'HP: '+str(player.HP)+'/'+str(player.max_HP), (0, 0, 0), cfont, 50, 400-10)
+                showContent(screen, 'HP: '+str(player.HP)+'/'+str(player.max_HP), (0, 0, 0), cfont, 50, 400+10)
                 showContent(screen, 'HP: '+str(enemies[0].HP)+'/'+str(enemies[0].max_HP), (0, 0, 0), cfont, 700+50, 100+10)
+                showContent(screen, '费: '+str(player.cost)+'/'+str(player.max_cost), (0, 0, 0), cfont, 50, 300-10)
                 cards_rect = []
                 for i, key in enumerate(piles.hand_pile):
-                    # print(locked_card, lock)
-                    if i == locked_card and lock:
-                        cards_rect.append(showImage(screen, cards[key].image_path, 50+100*i, 500+50-20)[0])
+                    if i == selected_card and lock:
+                        cards_rect.append(showImage(screen, cards[str(key)].image_path, 150+100*i, 500+50-20)[0])
                     else:
-                        cards_rect.append(showImage(screen, cards[key].image_path, 50+100*i, 500+50)[0])
+                        cards_rect.append(showImage(screen, cards[str(key)].image_path, 150+100*i, 500+50)[0])
                 endTurn_rect = showImage(screen, "images/others/endTurn.png", 700+50, 400)[0]
-                showContent(screen, '牌堆：'+str(piles.heap_num), (0, 0, 0), cfont, 50, 300)
-                showContent(screen, '弃牌堆：'+str(piles.discard_num), (0, 0, 0), cfont, 750, 300)
+                showContent(screen, '牌堆：'+str(piles.heap_num), (0, 0, 0), cfont, 50, 550)
+                showContent(screen, '弃牌堆：'+str(piles.discard_num), (0, 0, 0), cfont, 750, 550)
                 pygame.display.update()
-            loop = 1
             player_hit = False
             enemy_hit = False
+            loop = 1
             if enemies[0].isDead():
                 pygame.display.update()
                 with open("data/data.json", "r") as f:
@@ -240,17 +245,17 @@ def showBattleInterface(screen, width, height, clock, e_id):
             if event.type == pygame.MOUSEBUTTONDOWN:
                 for i, card_rect in enumerate(cards_rect):
                     if card_rect.collidepoint(event.pos):
-                        if not lock:
+                        if not lock and cards[str(piles.hand_pile[i])].cost <= player.cost:
                             lock = True
-                            locked_card = i
+                            selected_card = i
                         else:
                             lock = False #目前点击任何其他牌都会解锁
                         break
                 if enemy_img[0].collidepoint(event.pos) and lock:
-                    print(i, piles.hand_pile)
-                    enemies[0].affected(cardAnalyzer(str(piles.hand_pile[locked_card]))) #待修改,改成类相关？
+                    enemies[0].affected(cardAnalyzer(str(piles.hand_pile[selected_card])))
                     enemy_hit = True
-                    piles.playcard(i)
+                    player.cost -= cards[str(piles.hand_pile[selected_card])].cost #是否考虑抽象到类？
+                    piles.playcard(selected_card)
                     lock = False
                 if endTurn_rect.collidepoint(event.pos):
                     player.affected(enemies[0].act())
@@ -259,6 +264,7 @@ def showBattleInterface(screen, width, height, clock, e_id):
                     if piles.heap_num < piles.HANDMAX:
                         piles.resetcard()
                     piles.dealcard()
+                    player.initialize()
                 loop = 20
             elif event.type == pygame.QUIT:
                 pygame.quit()
@@ -285,6 +291,7 @@ def showEndInterface(screen, width, height, clock, result):
             if event.type == pygame.QUIT:
                 pygame.quit()
                 sys.exit()
+
 def main():
     width = 800
     height = 600

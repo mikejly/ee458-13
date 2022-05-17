@@ -1,4 +1,4 @@
 {
-    "0" : { "name" : "attack", "image_path" : "images/cards/attack.png", "value" :  5},
-    "1" : { "name" : "heavy_attack", "image_path" : "images/cards/heavy_attack.png", "value" :  10}
+    "0" : { "name" : "attack", "image_path" : "images/cards/attack.png", "value" :  5, "cost" : 1},
+    "1" : { "name" : "heavy_attack", "image_path" : "images/cards/heavy_attack.png", "value" :  10, "cost" : 1}
 }
