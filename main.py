@@ -247,7 +247,8 @@ def showBattleInterface(screen, width, height, clock, e_id):
                             lock = False #目前点击任何其他牌都会解锁
                         break
                 if enemy_img[0].collidepoint(event.pos) and lock:
-                    enemies[0].affected(cardAnalyzer(str(piles.hand_pile[i]))) #待修改,改成类相关？
+                    print(i, piles.hand_pile)
+                    enemies[0].affected(cardAnalyzer(str(piles.hand_pile[locked_card]))) #待修改,改成类相关？
                     enemy_hit = True
                     piles.playcard(i)
                     lock = False

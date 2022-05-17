@@ -10,7 +10,7 @@
     "name": "character1",
     "image_path": "images/character/character1.png",
     "max_HP": 50,
-    "HP": 50,
+    "HP": 15,
     "cards": [
       0,
       1,
