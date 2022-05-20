@@ -10,7 +10,7 @@
     "name": "character1",
     "image_path": "images/character/character1.png",
     "max_HP": 50,
-    "HP": 45,
+    "HP": 25,
     "cards": [
       0,
       1,
@@ -39,6 +39,8 @@
   },
   "enemies_ids": [
     [
+      0,
+      0,
       0
     ],
     [

@@ -40,14 +40,13 @@ def initialization():
     data = {
         "map": [0, 0, 0, 0, 0], 
         "player" : player.__dict__,
-        "enemies_ids" : [[0], [0], [0], [0], [0]]
+        "enemies_ids" : [[0, 0, 0], [0], [0], [0], [0]]
         }
     with open("data/data.json", "w") as f:
         json.dump(data, f, indent = 2)
     saves = {"saves" : [save0, save1, save2]}
     with open("data/saves.json", "w") as f:
         json.dump(saves, f, indent = 2)
-
 
 def showStartInterface(screen, width, height, clock):
     screen.fill((0,0,0))
@@ -57,10 +56,11 @@ def showStartInterface(screen, width, height, clock):
     c1_rect = showContent(screen, '开始游戏', (0, 0, 255), cfont, 400, 300)[0]
     c2_rect = showContent(screen, '继续游戏', (0, 0, 255), cfont, 400, 400)[0]
     c3_rect = showContent(screen, '退出', (0, 0, 255), cfont, 400, 500)[0]
+    clock.tick(60)
     pygame.display.update()
     while True:
         for event in pygame.event.get():
-            clock.tick(60)
+            # clock.tick(60)
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if c1_rect.collidepoint(event.pos):
                     return "start"
@@ -80,7 +80,7 @@ def showMapInterface(screen, width, height, clock):
         map_data = json.load(f)["map"]
     while True:
         for event in pygame.event.get():
-            clock.tick(60)
+            # clock.tick(60)
             screen.fill((255, 255, 255))
             save = showContent(screen, '保存', (0, 0, 0), cfont, 200, 100)[0]
             load = showContent(screen, '读取', (0, 0, 0), cfont, 600, 100)[0]
@@ -89,6 +89,7 @@ def showMapInterface(screen, width, height, clock):
             e2 = showImage(screen, img_paths[map_data[2]], 400 , 300)[0]
             e3 = showImage(screen, img_paths[map_data[3]], 500 , 300)[0]
             e4 = showImage(screen, img_paths[map_data[4]], 600 , 300)[0]
+            clock.tick(60)
             pygame.display.update()
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if e0.collidepoint(event.pos) and not map_data[0]:
@@ -120,11 +121,12 @@ def showSaveAndLoadInterface(screen, width, height, clock, state):
     save0 = showContent(screen, save_dict[saves["saves"][0]], (0, 0, 0), cfont, 400, 100)[0]
     save1 = showContent(screen, save_dict[saves["saves"][1]], (0, 0, 0), cfont, 400, 300)[0]
     save2 = showContent(screen, save_dict[saves["saves"][2]], (0, 0, 0), cfont, 400, 500)[0]
+    clock.tick(60)
     pygame.display.update()
     save_num = -1
     while True:
         for event in pygame.event.get():
-            clock.tick(60)
+            # clock.tick(60)
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if save0.collidepoint(event.pos):
                     save_num = 0
@@ -189,9 +191,12 @@ def showBattleInterface(screen, width, height, clock, e_id):
         enemies.append(enemy)
     #受击抖动相关
     player_hit = False
-    enemy_hit = False
+    enemies_hit = []
+    for i in range(len(enemies)):
+        enemies_hit.append(False)
     loop = 1
     shift = [0, 10, -10]
+    enemies_loc = [[700, 50], [500, 150], [700, 250]]
     #点击锁定相关
     lock = False
     selected_card = -1  #在手牌中的位置
@@ -203,21 +208,41 @@ def showBattleInterface(screen, width, height, clock, e_id):
     while True:
         for event in pygame.event.get():
             for i in range(loop):
-                clock.tick(60)
                 screen.fill((255, 255, 255))
+                enemies_rects = []
+                #角色，怪物受击判断
                 if player_hit:
-                    showImage(screen, player.image_path, 50+shift[i%3] , 300+50)
-                    enemy_img = showImage(screen, enemies[0].image_path, 700+50, 50)
-                elif enemy_hit:
-                    showImage(screen, player.image_path, 50 , 300+50)
-                    enemy_img = showImage(screen, enemies[0].image_path, 700+50+shift[i%3], 50)
+                    showImage(screen, player.image_path, 50+shift[i%3], 300+50)
                 else:
-                    showImage(screen, player.image_path, 50 , 300+50)
-                    enemy_img = showImage(screen, enemies[0].image_path, 700+50, 50)
-                screen.blit(enemy_img[1], enemy_img[0])
+                    showImage(screen, player.image_path, 50, 300+50)
+                for j, enemy_hit in enumerate(enemies_hit):
+                    if enemy_hit:
+                        enemies_rects.append(showImage(
+                            screen, 
+                            enemies[j].image_path, 
+                            enemies_loc[j][0]+50+shift[i%3], 
+                            enemies_loc[j][1]
+                            )[0])
+                    else:
+                        enemies_rects.append(showImage(
+                            screen, 
+                            enemies[j].image_path,  
+                            enemies_loc[j][0]+50, 
+                            enemies_loc[j][1]
+                            )[0])
+                #显示角色怪物血条，费
                 showContent(screen, 'HP: '+str(player.HP)+'/'+str(player.max_HP), (0, 0, 0), cfont, 50, 400+10)
-                showContent(screen, 'HP: '+str(enemies[0].HP)+'/'+str(enemies[0].max_HP), (0, 0, 0), cfont, 700+50, 100+10)
                 showContent(screen, '费: '+str(player.cost)+'/'+str(player.max_cost), (0, 0, 0), cfont, 50, 300-10)
+                for i in range(len(enemies)):
+                    showContent(
+                        screen, 
+                        'HP: '+str(enemies[i].HP)+'/'+str(enemies[i].max_HP), 
+                        (0, 0, 0), 
+                        cfont, 
+                        enemies_loc[i][0]+50, 
+                        enemies_loc[i][1]+50
+                        )
+                #显示角色手牌
                 cards_rect = []
                 for i, key in enumerate(piles.hand_pile):
                     if i == selected_card and lock:
@@ -227,11 +252,19 @@ def showBattleInterface(screen, width, height, clock, e_id):
                 endTurn_rect = showImage(screen, "images/others/endTurn.png", 700+50, 400)[0]
                 showContent(screen, '牌堆：'+str(piles.heap_num), (0, 0, 0), cfont, 50, 550)
                 showContent(screen, '弃牌堆：'+str(piles.discard_num), (0, 0, 0), cfont, 750, 550)
+                clock.tick(60)
                 pygame.display.update()
+            #部分参数初始化
             player_hit = False
-            enemy_hit = False
+            for i in range(len(enemies)):
+                enemies_hit[i] = False
             loop = 1
-            if enemies[0].isDead():
+            all_dead = True
+            #战斗结果判定
+            for i in range(len(enemies)):
+                if not enemies[i].isDead():
+                    all_dead = False
+            if all_dead:
                 pygame.display.update()
                 with open("data/data.json", "r") as f:
                     data = json.load(f)
@@ -242,7 +275,9 @@ def showBattleInterface(screen, width, height, clock, e_id):
                 return True
             elif player.isDead():
                 return False
+            #鼠标点击事件
             if event.type == pygame.MOUSEBUTTONDOWN:
+                #点击手牌
                 for i, card_rect in enumerate(cards_rect):
                     if card_rect.collidepoint(event.pos):
                         if not lock and cards[str(piles.hand_pile[i])].cost <= player.cost:
@@ -251,25 +286,31 @@ def showBattleInterface(screen, width, height, clock, e_id):
                         else:
                             lock = False #目前点击任何其他牌都会解锁
                         break
-                if enemy_img[0].collidepoint(event.pos) and lock:
-                    enemies[0].affected(cardAnalyzer(str(piles.hand_pile[selected_card])))
-                    enemy_hit = True
+                #点击怪物头像
+                for i in range(len(enemies)):
+                    if enemies_rects[i].collidepoint(event.pos) and lock:
+                        enemies[i].affected(cardAnalyzer(str(piles.hand_pile[selected_card])))
+                        enemies_hit[i] = True
+                if True in enemies_hit:
                     player.cost -= cards[str(piles.hand_pile[selected_card])].cost #是否考虑抽象到类？
                     piles.playcard(selected_card)
                     lock = False
+                    # loop = 20
+                #点击结束回合
                 if endTurn_rect.collidepoint(event.pos):
-                    player.affected(enemies[0].act())
+                    for i in range(len(enemies)):
+                        if not enemies[i].isDead():
+                            player.affected(enemies[i].act()) #只会有一次动画
                     player_hit = True
                     piles.discardcard()
                     if piles.heap_num < piles.HANDMAX:
                         piles.resetcard()
                     piles.dealcard()
                     player.initialize()
-                loop = 20
+                loop = 30
             elif event.type == pygame.QUIT:
                 pygame.quit()
                 sys.exit()
-
 
 def showEndInterface(screen, width, height, clock, result):
     screen.fill((255, 255, 255))
@@ -280,11 +321,11 @@ def showEndInterface(screen, width, height, clock, result):
     else:
         showContent(screen, "你输了！", (0, 0, 0), font2, 400, 300)[0]
     showContent(screen, "点击任意位置返回开始界面", (0, 0, 0), font1, 400, 500)[0]
+    clock.tick(60)
     pygame.display.update()
     rect = screen.get_rect()
     while True:
         for event in pygame.event.get():
-            clock.tick(60)
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if rect.collidepoint(event.pos):
                     return
@@ -302,7 +343,7 @@ def main():
     clock = pygame.time.Clock()
     while True:
         for event in pygame.event.get():
-            clock.tick(60)
+            # clock.tick(60)
             start_choice = showStartInterface(screen, width, height, clock)
             if start_choice == "start":
                 initialization()
@@ -320,7 +361,6 @@ def main():
             if event.type == pygame.QUIT:
                 pygame.quit()
                 sys.exit()
-
 
 if __name__ == '__main__':
 	main()
