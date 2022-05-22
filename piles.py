@@ -1,17 +1,18 @@
 import random
 
 class Piles:
-    def __init__(self, heap):
+    def __init__(self, heap, HANDMAX):
         self.heap_num = len(heap)
         self.MAX = self.heap_num
         self.heap = heap
-        self.HANDMAX = 3
+        self.HANDMAX = HANDMAX
         self.hand_num = 0
         self.discard_num = 0
         self.hand_pile = []
         self.discard_pile = []
-    def dealcard(self):
-        num = self.HANDMAX - self.hand_num
+    def dealcard(self, num=0):
+        if num == 0:
+            num = self.HANDMAX - self.hand_num
         for i in range(0, num):
             if self.heap_num < 1:
                 break

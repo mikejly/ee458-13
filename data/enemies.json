@@ -1,11 +1,50 @@
 {
-    "0" : { 
-        "name" : "slime", 
-        "image_path" : "images/enemy/slime.png", 
-        "max_HP" : 10,
-        "armor" : 0,
-        "damage" : 5,
-        "action_list" : [1, 0, 0, 0, 0, 0],
-        "actual_list" :  [0]
+    "0":{
+        "name":"测试木桩",
+        "image":"images/enemy/001.png",
+        "HP":1,
+        "damage":10,
+        "action_list":[1,0,0,0,0,0,0],
+        "actual_list":[0]
+    },
+    "1":{
+        "name":"史莱姆",
+        "image":"images/enemy/001.png",
+        "HP":30,
+        "damage":8,
+        "action_list":[1,0,2,0,0,0,0],
+        "actual_list":[0,2,0,0,0]
+    },
+    "2":{
+        "name":"贝西摩斯",
+        "image":"images/enemy/002.png",
+        "HP":120,
+        "damage":10,
+        "action_list":[2,2,0,2,0,4,0],
+        "actual_list":[0,3,1,5]
+    },
+    "3":{
+        "name":"百肢剑士",
+        "image":"images/enemy/003.png",
+        "HP":30,
+        "damage":1,
+        "action_list":[0,4,0,0,0,1,0],
+        "actual_list":[1,1,5]
+    },
+    "4":{
+        "name":"邪教巫师",
+        "image":"images/enemy/004.png",
+        "HP":65,
+        "damage":0,
+        "action_list":[0,0,2,2,8,0,0],
+        "actual_list":[3,2,4]
+    },
+    "5":{
+        "name":"邪教骑士",
+        "image":"images/enemy/005.png",
+        "HP":80,
+        "damage":16,
+        "action_list":[1,0,0,0,0,0,6],
+        "actual_list":[0,6]
     }
 }
