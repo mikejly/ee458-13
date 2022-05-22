@@ -26,7 +26,6 @@ class Piles:
         del self.hand_pile[n]
         self.hand_num -= 1
         self.discard_num += 1
-        #调用效果函数
     def discardcard(self):
         while self.hand_num > 0:
             self.discard_pile.append(self.hand_pile[0])

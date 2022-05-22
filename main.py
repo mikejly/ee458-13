@@ -16,14 +16,14 @@ def initialization(chara):
     # player = Player("character1", 10000, 10000, cards) #简单处理
     if chara == 0:
         cards = [1, 1, 1, 2, 2, 2, 3, 9, 14, 19]
-        # cards = [1, 1, 1, 1, 1, 1]
-        player = Player("刺客", 80, 80, 4, cards)
+        # cards = [1, 1, 1, 1, 1, 12]
+        player = Player("刺客", 100, 100, 4, cards)
     elif chara == 1:
         cards = [1, 1, 1, 2, 2, 2, 3, 5, 12, 16]
         player = Player("骑士", 160, 160, 4, cards)
     elif chara == 2:
         cards = [1, 1, 1, 2, 2, 2, 3, 11, 13, 20]
-        player = Player("狂战士", 120, 120, 5, cards)
+        player = Player("狂战士", 120, 120, 4, cards)
     data = {
         "map": [0, 0, 0, 0, 0], 
         "player" : player.__dict__,
@@ -444,6 +444,8 @@ def showBattleInterface(screen, width, height, clock, e_id):
                     piles.playcard(selected_card_key)
                     lock = False
                     prev_card_type = selected_card.card_type
+                    if selected_card.name == "护盾打击": #临时修改，涉及底层机制,待会改
+                        player.armor += 7
                 #点击结束回合
                 if endTurn_rect.collidepoint(event.pos):#只会有一次动画
                     lock = False

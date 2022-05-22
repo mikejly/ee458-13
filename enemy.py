@@ -40,6 +40,7 @@ class Enemy:
                     self.armor -= damage
                 else:
                     self.HP -= (damage - self.armor)
+                    self.armor = 0
                 self.debuff[0] += max(effect[1], 0)
                 self.debuff[1] += max(effect[2], 0)
                 self.debuff[2] += max(effect[10], 0)

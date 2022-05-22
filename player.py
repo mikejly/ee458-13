@@ -3,7 +3,7 @@ class Player:
         self.name = name
         self.image_path = "images/character/"+name+".png"
         self.max_HP = max_HP
-        self.HP = max_HP
+        self.HP = HP
         self.armor = 0
         self.buff = [0, 0]
         self.debuff = [0, 0, 0]
@@ -24,6 +24,7 @@ class Player:
                 self.armor -= damage
             else:
                 self.HP -= (damage - self.armor)
+                self.armor = 0
             self.debuff[0] += max(effect[1], 0)
             self.debuff[1] += max(effect[2], 0)
             self.debuff[2] += max(effect[10], 0)

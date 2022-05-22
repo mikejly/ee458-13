@@ -7,10 +7,10 @@
     0
   ],
   "player": {
-    "name": "\u9a91\u58eb",
-    "image_path": "images/character/\u9a91\u58eb.png",
-    "max_HP": 160,
-    "HP": 160,
+    "name": "\u523a\u5ba2",
+    "image_path": "images/character/\u523a\u5ba2.png",
+    "max_HP": 100,
+    "HP": 100,
     "armor": 0,
     "buff": [
       0,
@@ -28,18 +28,14 @@
       1,
       1,
       1,
-      2,
-      2,
-      2,
-      3,
-      5,
-      12,
-      16
+      1,
+      1,
+      12
     ]
   },
   "enemies_ids": [
     [
-      3
+      5
     ],
     [
       3,
