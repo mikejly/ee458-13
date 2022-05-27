@@ -10,7 +10,7 @@ class Piles:
         self.discard_num = 0
         self.hand_pile = []
         self.discard_pile = []
-    def dealcard(self, num=0):
+    def dealcard(self, num=0): #额外抽牌可能导致报错
         if num == 0:
             num = self.HANDMAX - self.hand_num
         for i in range(0, num):
@@ -37,7 +37,7 @@ class Piles:
             self.heap.append(self.discard_pile[0])
             del self.discard_pile[0]
         self.discard_num = 0
-        self.heap_num = self.MAX
+        self.heap_num = self.MAX - self.hand_num
 
 
 

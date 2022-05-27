@@ -19,7 +19,8 @@ class Enemy:
         if action == 0: #造成伤害公式	基础伤害数值*a+伤害增益
             effect[0] = round((self.damage * a + self.buff[0]) * coef)
         elif action == 1: #造成伤害公式	（基础伤害数值+伤害增益）*a
-            effect[0] = round(((self.damage + self.buff[0]) * a) * coef)
+            effect[0] = round((self.damage + self.buff[0]) * coef)
+            effect[7] = a
         elif action == 2: #玩家a回合内造成伤害减少30%
             effect[1] = a
         elif action == 3: #玩家a回合内受到伤害增加50%

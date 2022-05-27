@@ -2,6 +2,7 @@ class Player:
     def __init__(self, name, max_HP, HP, max_cost, cards):
         self.name = name
         self.image_path = "images/character/"+name+".png"
+        # self.image_path = "images/character/test.png"
         self.max_HP = max_HP
         self.HP = HP
         self.armor = 0
